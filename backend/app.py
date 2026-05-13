@@ -89,10 +89,35 @@ with app.app_context():
 MODEL_PATH = os.path.join(os.path.dirname(__file__), '../models/fake_news_model.pkl')
 VECTORIZER_PATH = os.path.join(os.path.dirname(__file__), '../models/tfidf_vectorizer.pkl')
 
+# Hugging Face model repo (used when .pkl files are not found locally, e.g. on Render)
+HF_REPO = "Raktim900/fake-news-detection-models"
+HF_BASE_URL = f"https://huggingface.co/{HF_REPO}/resolve/main"
+
+def download_model_if_missing(local_path, filename):
+    """Download a model file from Hugging Face if it doesn't exist locally."""
+    if not os.path.exists(local_path):
+        import urllib.request
+        url = f"{HF_BASE_URL}/{filename}"
+        os.makedirs(os.path.dirname(local_path), exist_ok=True)
+        logger.info(f"Model not found locally. Downloading '{filename}' from Hugging Face...")
+        urllib.request.urlretrieve(url, local_path)
+        logger.info(f"Downloaded '{filename}' successfully.")
+    else:
+        logger.info(f"Model found locally: '{filename}'")
+
 try:
+    download_model_if_missing(MODEL_PATH, "fake_news_model.pkl")
+    download_model_if_missing(VECTORIZER_PATH, "tfidf_vectorizer.pkl")
+
     logger.info("Loading ML models...")
     model = joblib.load(MODEL_PATH)
     vectorizer = joblib.load(VECTORIZER_PATH)
+    explainer = LimeTextExplainer(class_names=['Fake', 'Real'])
+    logger.info("ML models loaded successfully.")
+except Exception as e:
+    logger.error(f"FATAL: Failed to load ML models: {e}")
+    model = None
+
     explainer = LimeTextExplainer(class_names=['Fake', 'Real'])
     logger.info("ML models loaded successfully.")
 except Exception as e:
