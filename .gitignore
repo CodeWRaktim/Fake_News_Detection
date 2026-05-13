@@ -1,0 +1,27 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+
+# Environment variables (NEVER commit these!)
+.env
+backend/.env
+
+# Large datasets (too big for GitHub)
+data/
+models/
+
+# Local SQLite database
+backend/users.db
+
+# Node.js
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# OS Files
+.DS_Store
+Thumbs.db

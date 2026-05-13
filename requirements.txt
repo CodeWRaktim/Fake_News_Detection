@@ -1,0 +1,8 @@
+scikit-learn
+pandas
+numpy
+nltk
+Flask
+Flask-Cors
+lime
+joblib
