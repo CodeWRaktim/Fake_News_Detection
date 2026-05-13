@@ -28,7 +28,11 @@ from preprocess import clean_text
 from lime.lime_text import LimeTextExplainer
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=[
+    "http://localhost:5173",                                                          # Local dev
+    "https://fake-news-detection-mftjqz6d3-codewraktims-projects.vercel.app",        # Vercel deployment
+    "https://*.vercel.app"                                                            # Any future Vercel preview URLs
+])
 
 # --- CONFIGURATION ---
 # Look for a PostgreSQL URL in .env, otherwise use SQLite
